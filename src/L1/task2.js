@@ -1,5 +1,6 @@
 const fs = require("node:fs");
 const csv = require("csvtojson");
+
 const txtFolderSrc = __dirname + "/txt";
 const csvFilePath = "./cvs/nodejs-hw1-ex1.csv";
 const txtFilePath = txtFolderSrc + "/result.txt";
