@@ -9,7 +9,7 @@ const { task_3 } = require("./src/L1/task3")
 //task_1() 
 
 // Task 2
-//task_2()
+task_2()
 
 // Task 3
-task_3()
+//task_3()
