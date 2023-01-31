@@ -6,7 +6,6 @@ import { Model } from "sequelize";
 
 export const createSqlServer = async () => {
   const connection: Singleton = Singleton.getInstance();
-  console.log(':::>>>>>>> ', connection)
 
   const server = createServer();
 
