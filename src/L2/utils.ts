@@ -6,7 +6,8 @@ export const getAutoSuggestUsers = (
   limit: number
 ) => {
   const filteredUsers = users.filter((user, index) => {
-    return user.name.includes(loginSubstring) && index < limit;
+    return user.login.includes(loginSubstring) && index < limit;
   });
   return filteredUsers;
 };
+

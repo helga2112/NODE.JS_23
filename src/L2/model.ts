@@ -1,7 +1,7 @@
 export interface User  {
-    id: number,
-    uuid?: string
-    name: string,
+    id?: number,
+    login: string,
+    password: string,
     age: number,
-    email: string
+    isDeleted?: boolean
 }
