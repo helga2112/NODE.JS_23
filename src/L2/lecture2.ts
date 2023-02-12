@@ -2,6 +2,7 @@ import { User } from "./model";
 import express from "express";
 import { getAutoSuggestUsers } from "./utils";
 import { createValidator } from "express-joi-validation";
+import Joi from "joi";
 import { schema } from "./ValidationSchema";
 
 const createServer = () => {
