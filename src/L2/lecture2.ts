@@ -1,6 +1,6 @@
 import { User } from "./model";
-import bodyParser from "body-parser";
 import express from "express";
+import { getAutoSuggestUsers } from "./utils";
 
 const createServer = () => {
   const app = express();
@@ -15,8 +15,21 @@ const createServer = () => {
     res.json({ message: "Server is running", users });
   });
 
+  app.get("/autosuggest", (req, res) => {
+    const { login, max } = req.body;
+    const selectedUsers = getAutoSuggestUsers(users, login, max);
+    if (selectedUsers.length > 0) {
+      res.json(selectedUsers);
+    } else {
+      res
+        .status(400)
+        .send(`Something went wrong! No users with following login chars: ${login}`);
+    }
+  });
+
   app.get("/:id", (req, res) => {
     const { id } = req.params;
+    console.log(">>>>>>", id);
     const found = users.some((user) => user.id === parseInt(id));
     if (found) {
       res.json(users.filter((user) => user.id === parseInt(id)));
@@ -29,7 +42,7 @@ const createServer = () => {
     const { id } = req.params;
     const found = users.some((user) => user.id === parseInt(id));
     if (found) {
-      res.json(users = users.filter((user) => user.id != parseInt(id)));
+      res.json((users = users.filter((user) => user.id != parseInt(id))));
     } else {
       res.status(400).send(`Something broke! No user with id: ${id}`);
     }
