@@ -1,6 +1,9 @@
 import { User } from "./model";
 import express from "express";
 import { getAutoSuggestUsers } from "./utils";
+import { createValidator } from "express-joi-validation";
+import Joi from "joi";
+import { schema } from "./ValidationSchema";
 
 const createServer = () => {
   const app = express();
@@ -11,8 +14,12 @@ const createServer = () => {
 
   app.use(express.urlencoded({ extended: false }));
 
+  const validator = createValidator({});
+
+  const querySchema = schema;
+
   app.get("/", (req, res) => {
-    res.json({ message: "Server is running", users });
+    res.json({ users });
   });
 
   app.get("/autosuggest", (req, res) => {
@@ -23,13 +30,14 @@ const createServer = () => {
     } else {
       res
         .status(400)
-        .send(`Something went wrong! No users with following login chars: ${login}`);
+        .send(
+          `Something went wrong! No users with following login chars: ${login}`
+        );
     }
   });
 
   app.get("/:id", (req, res) => {
     const { id } = req.params;
-    console.log(">>>>>>", id);
     const found = users.some((user) => user.id === parseInt(id));
     if (found) {
       res.json(users.filter((user) => user.id === parseInt(id)));
@@ -48,10 +56,12 @@ const createServer = () => {
     }
   });
 
-  app.post("/:id", (req, res) => {
+  app.put("/:id", (req, res) => {
+    console.log('POST');
+    const { id } = req.params;
     const data: User = req.body;
-    console.log(req.body);
-    const found = users.some((user) => user.id === data.id);
+    console.log(data);
+    const found = users.some((user) => user.id === Number(id));
     console.log("found", found);
     if (found) {
       users = [...users, data];
@@ -61,14 +71,19 @@ const createServer = () => {
     }
   });
 
-  app.post("/", (req, res) => {
+  app.post("/", validator.body(querySchema), (req, res) => {
     const data: User = req.body;
-    console.log(req.body);
-    const found = users.some((user) => user.id === data.id);
+    const found = users.some(
+      (user) => user.login === data.login && user.password === data.password
+    );
     if (found) {
-      res.status(400).send(`Something broke! No user with id: ${data.id}`);
+      res
+        .status(400)
+        .send(`Something went wrong! User already exist: ${data.login}`);
     } else {
-      users.push(data as User);
+      const newUser: User = { ...data, id: users.length, isDeleted: false };
+      console.log(newUser);
+      users.push(newUser);
       res.status(200).send(users);
     }
   });
