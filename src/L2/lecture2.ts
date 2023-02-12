@@ -12,7 +12,7 @@ const createServer = () => {
   app.use(express.urlencoded({ extended: false }));
 
   app.get("/", (req, res) => {
-    res.json({ message: "Server is running :D111", users });
+    res.json({ message: "Server is running", users });
   });
 
   app.get("/:id", (req, res) => {
@@ -20,6 +20,16 @@ const createServer = () => {
     const found = users.some((user) => user.id === parseInt(id));
     if (found) {
       res.json(users.filter((user) => user.id === parseInt(id)));
+    } else {
+      res.status(400).send(`Something broke! No user with id: ${id}`);
+    }
+  });
+
+  app.delete("/:id", (req, res) => {
+    const { id } = req.params;
+    const found = users.some((user) => user.id === parseInt(id));
+    if (found) {
+      res.json(users = users.filter((user) => user.id != parseInt(id)));
     } else {
       res.status(400).send(`Something broke! No user with id: ${id}`);
     }
