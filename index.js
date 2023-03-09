@@ -10,4 +10,7 @@ import task_3 from "./src/L1/task3";
 //task_2();
 
 // Task 3
-task_3();
+//task_3();
+
+// Task 3
+//task_3();
