@@ -1,28 +1,19 @@
-import { addDefaultValues } from "./service/modelServices/defaultValuseService";
-import { DBConnectionManager } from "./manager/dbConnectionManager";
-import { createServer } from "./service/serverService/serverService";
+import { Singleton } from "./service/Singleton";
+import { handleRouts } from "./routers/routs";
+import { createServer } from "./service/serverService";
 import { initUser, User } from "./models/UserModel";
-import { Group, initGroups } from "./models/GroupModel";
-import { handleGroupUserRouts } from "./routers/routsGroupUser";
-import logger from "./utils/logger";
+import { Model } from "sequelize";
 
 export const createSqlServer = async () => {
-  const connection: DBConnectionManager = DBConnectionManager.getInstance();
+  const connection: Singleton = Singleton.getInstance();
+  console.log(':::>>>>>>> ', connection)
 
-  const sequelize = connection.sequelize;
   const server = createServer();
 
   connection.connect();
 
-  initUser(sequelize);
-  User.sync({ force: false });
+  initUser(connection.sequelize)
 
-  initGroups(sequelize);
-  Group.sync({ force: false });
-
-  await addDefaultValues();
-
-  handleGroupUserRouts(server);
-
-  logger.log("info", "[APP]: started");
+  await connection.createTable(User as typeof Model);
+  handleRouts(server);
 };

@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import { DataTypes, Model } from "sequelize";
+import { Singleton } from "../service/Singleton";
 
 export interface UserInterface {
   id?: number;
@@ -11,13 +12,13 @@ export interface UserInterface {
 }
 
 export class User extends Model<UserInterface> {}
+//export class User extends Model {}
 
 export const initUser = (connection: Sequelize) => {
   User.init(
     {
       id:{
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true
       },
       login: {
@@ -26,6 +27,7 @@ export const initUser = (connection: Sequelize) => {
           is: ["[a-z]", "i"],
           min: 3,
           max: 30,
+          allowNull: false,
         },
       },
       password: {
@@ -34,12 +36,13 @@ export const initUser = (connection: Sequelize) => {
           is: ["^[a-zA-Z0-9]", "i"],
           min: 8,
           max: 30,
+          allowNull: false,
         },
       },
       email:{
         type: DataTypes.STRING,
         validate: {
-          isEmail: true
+          is: ['^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'],
         }
       },
       age: {

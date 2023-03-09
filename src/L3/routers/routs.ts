@@ -1,28 +1,20 @@
-import { User } from "./model";
-import express from "express";
-import { getAutoSuggestUsers } from "./utils";
-import { createValidator } from "express-joi-validation";
-import { schema } from "./ValidationSchema";
+import { Express } from "express-serve-static-core";
+import { getAllUsers } from "../service/requestsService";
 
-const createServer = () => {
-  const app = express();
+export const handleRouts = (server: Express) => {
 
-  let users: User[] = [];
 
-  app.use(express.json());
+  server.get("/", (req, res) => {
+    const users = getAllUsers()
 
-  app.use(express.urlencoded({ extended: false }));
-
-  const validator = createValidator({});
-
-  const querySchema = schema;
-
-  app.get("/", (req, res) => {
-    res.json({ users });
+  /*   const records = User.findAll({where: {}})
+    //res.json({ users });
+    res.json(records); */
+    res.send(users)
   });
 
-  app.get("/autosuggest", (req, res) => {
-    const { login, max } = req.body;
+  server.get("/autosuggest", (req, res) => {
+   /*  const { login, max } = req.body;
     const selectedUsers = getAutoSuggestUsers(users, login, max);
     if (selectedUsers.length > 0) {
       res.json(selectedUsers);
@@ -32,46 +24,44 @@ const createServer = () => {
         .send(
           `Something went wrong! No users with following login chars: ${login}`
         );
-    }
+    } */
   });
 
-  app.get("/:id", (req, res) => {
-    const { id } = req.params;
-    const found = users.some((user) => user.id === parseInt(id));
+  server.get("/:id", (req, res) => {
+   /*  const { id } = req.params;
+    const found = users.some((user: User) => user.id === parseInt(id));
     if (found) {
       res.json(users.filter((user) => user.id === parseInt(id)));
     } else {
       res.status(400).send(`Something broke! No user with id: ${id}`);
-    }
+    } */
   });
 
-  app.delete("/:id", (req, res) => {
-    const { id } = req.params;
+  server.delete("/:id", (req, res) => {
+   /*  const { id } = req.params;
     const found = users.some((user) => user.id === parseInt(id));
     if (found) {
       res.json((users = users.filter((user) => user.id != parseInt(id))));
     } else {
       res.status(400).send(`Something broke! No user with id: ${id}`);
-    }
+    } */
   });
 
-  app.put("/:id", (req, res) => {
-    console.log('POST');
-    const { id } = req.params;
-    const data: User = req.body;
-    console.log(data);
-    const found = users.some((user) => user.id === Number(id));
+  server.post("/:id", (req, res) => {
+   /*  const data: User = req.body;
+    console.log(req.body);
+    const found = users.some((user) => user.id === data.id);
     console.log("found", found);
     if (found) {
       users = [...users, data];
       res.status(200).send(users);
     } else {
       res.status(400).send(`Something broke! No user with id: ${data.id}`);
-    }
+    } */
   });
 
-  app.post("/", validator.body(querySchema), (req, res) => {
-    const data: User = req.body;
+  server.post("/", (req, res) => {
+    /* const data: User = req.body;
     const found = users.some(
       (user) => user.login === data.login && user.password === data.password
     );
@@ -84,13 +74,7 @@ const createServer = () => {
       console.log(newUser);
       users.push(newUser);
       res.status(200).send(users);
-    }
+    } */
   });
 
-  let PORT = 8080;
-
-  app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-  });
 };
-export default createServer;
