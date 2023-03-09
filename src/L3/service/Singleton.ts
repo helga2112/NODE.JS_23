@@ -3,19 +3,19 @@ import { Sequelize } from "sequelize";
 import { Model } from "sequelize";
 import { User } from "../models/UserModel";
 
-export class Singleton {
-  private static instance: Singleton;
+export class Singleton  {
+  private static instance: Singleton ;
   private _sequelize: Sequelize = new Sequelize(DB_URI);
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): Singleton {
     if (!Singleton.instance) {
-      Singleton.instance = new Singleton();
+        Singleton.instance = new Singleton();
     }
 
     return Singleton.instance;
-  }
+}
 
   public connect = async () => {
     console.log("connect");
@@ -28,13 +28,13 @@ export class Singleton {
     }
   };
 
-  public createTable = async (model: typeof Model) => {
+  public createTable = async(model: typeof Model) => {
     await User.sync({ force: true });
     console.log("The table for the User model dwas just (re)created!");
-  };
+  }
 
   public get sequelize() {
-    console.log(">>>>>>>>>>>>>>>", this._sequelize);
+    console.log('>>>>>>>>>>>>>>>', this._sequelize)
     return this._sequelize;
   }
 }
