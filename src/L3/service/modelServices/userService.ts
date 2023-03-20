@@ -1,8 +1,8 @@
-import { UserInterface } from "./../models/UserModel";
-import { User } from "../models/UserModel";
+import { UserInterface } from "../../models/UserModel";
+import { User } from "../../models/UserModel";
 import { Op } from "sequelize";
 
-export const getUser = async (id: string) => {
+export const recieveUser = async (id: string) => {
   return await User.findOne({ where: { id: id } });
 };
 
@@ -20,7 +20,7 @@ export const updateUser = async (user: UserInterface, id: string) => {
       age: user.age,
       password: user.password,
     },
-    { where: { id: 1 } }
+    { where: { id: id } }
   );
 };
 
@@ -39,7 +39,12 @@ export const createUser = async (data: UserInterface) => {
 };
 
 export const deleteUser = async (id: number) => {
-  return await User.destroy({ where: { id: id } });
+  return await User.update(
+    {
+      isDeleted: true,
+    },
+    { where: { id: id } }
+  );
 };
 
 export const getAllUsers = async () => {

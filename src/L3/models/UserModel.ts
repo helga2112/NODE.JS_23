@@ -1,6 +1,5 @@
 import { Sequelize } from "sequelize";
 import { DataTypes, Model } from "sequelize";
-import { Singleton } from "../service/Singleton";
 
 export interface UserInterface {
   id?: number;
@@ -12,7 +11,6 @@ export interface UserInterface {
 }
 
 export class User extends Model<UserInterface> {}
-//export class User extends Model {}
 
 export const initUser = (connection: Sequelize) => {
   User.init(
