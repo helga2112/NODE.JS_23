@@ -3,13 +3,14 @@ import {
   createUser,
   deleteUser,
   updateUser,
-} from "../service/userService";
+} from "../service/modelServices/userService";
 import { Express } from "express-serve-static-core";
-import { getAllUsers, getUser } from "../service/userService";
+import { getAllUsers, recieveUser } from "../service/modelServices/userService";
 import { UserInterface } from "../models/UserModel";
 
-export const handleRouts = (server: Express) => {
-  server.get("/user", (req, res) => {
+export const handleUsersRouts = (server: Express) => {
+
+  server.get("/", (req, res) => {
     getAllUsers()
       .then((users) => {
         console.log("All Users :", users);

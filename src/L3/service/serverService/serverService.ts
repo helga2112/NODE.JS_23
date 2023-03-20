@@ -1,7 +1,6 @@
-import { Sequelize } from 'sequelize';
 import express from "express";
 
-export const createServer = (DB: Sequelize) => {
+export const createServer = () => {
   const server = express();
   server.use(express.json());
   server.use(express.urlencoded({ extended: false }));
@@ -11,11 +10,6 @@ export const createServer = (DB: Sequelize) => {
   server.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });
-  
-  /* server.on('close', function () {
-    DB.close()
-    console.log(`Server connection closed`);
-  }) */
 
   return server;
 };
