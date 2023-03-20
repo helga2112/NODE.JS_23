@@ -1,38 +1,52 @@
-import {
-  getUserDb,
-  autosuggestUserDb,
-  updateUserDb,
-  createUserDb,
-  deleteUserDb,
-  getAllUsersDb,
-  createInitialUsersDb,
-} from "../../data-access/user-db";
 import { UserInterface } from "../../models/UserModel";
+import { User } from "../../models/UserModel";
+import { Op } from "sequelize";
 
-export const getUser = (id: string) => {
-  return getUserDb(id);
+export const recieveUser = async (id: string) => {
+  return await User.findOne({ where: { id: id } });
 };
 
 export const autosuggestUser = async (login: string, max: number) => {
-  return autosuggestUserDb(login, max);
+  return await User.findAll({
+    where: { login: { [Op.like]: "%" + login + "%" } },
+  });
 };
 
 export const updateUser = async (user: UserInterface, id: string) => {
-  return updateUserDb(user, id);
+  return await User.update(
+    {
+      login: user.login,
+      email: user.email,
+      age: user.age,
+      password: user.password,
+    },
+    { where: { id: id } }
+  );
 };
 
 export const createUser = async (data: UserInterface) => {
-  return createUserDb(data);
+  const { login, email, password, age, id } = data;
+  return await User.findOrCreate({
+    where: { email: email },
+    defaults: {
+      login: login,
+      email: email,
+      password: password,
+      age: age,
+      isDeleted: false,
+    },
+  });
 };
 
 export const deleteUser = async (id: number) => {
-  return deleteUserDb(id);
+  return await User.update(
+    {
+      isDeleted: true,
+    },
+    { where: { id: id } }
+  );
 };
 
 export const getAllUsers = async () => {
-  return getAllUsersDb();
-};
-
-export const createInitialValues = async () => {
-  return createInitialUsersDb();
+  return await User.findAll();
 };
