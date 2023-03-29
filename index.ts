@@ -1,4 +1,4 @@
-import { createSqlServer } from './src/L3/index';
+import { createSqlServer } from "./src/L3";
 
 // Lecture 2
 //  createServer()
