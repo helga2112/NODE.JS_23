@@ -4,108 +4,96 @@ import {
   deleteUser,
   updateUser,
 } from "../service/modelServices/userService";
-import { Express } from "express-serve-static-core";
-import { getAllUsers, recieveUser } from "../service/modelServices/userService";
+import { getAllUsers, getUser } from "../service/modelServices/userService";
 import { UserInterface } from "../models/UserModel";
+import express from "express";
+import logger from "../utils/logger";
 
-export const handleUsersRouts = (server: Express) => {
+const router = express.Router();
 
-  server.get("/", (req, res) => {
-    getAllUsers()
-      .then((users) => {
-        console.log("All Users :", users);
-        res.send(users);
-      })
-      .catch((error) => {
-        console.log("Users error:", error);
-        res.status(400).send(error);
-      });
-  });
+// GET ALL USERS
+router.get("/", async (req, res, next) => {
+  try {
+    const users = await getAllUsers();
+    logger.log("info", `[Users]: All Users: ${users}`);
+    return res.send(users);
+  } catch (error) {
+    next({ message: `Users error: ${error}` });
+  }
+});
 
-  server.get("/autosuggest", (req, res) => {
-    const { login, max } = req.body;
-    autosuggestUser(login, max)
-      .then((selectedUsers) => {
-        console.log('autosuggest :', selectedUsers)
-        if (selectedUsers.length === 0) {
-          res.status(400).send("Not found");
-        } else {
-          console.log(selectedUsers);
-          res.send(selectedUsers);
-        }
-      })
-      .catch((error) => {
-        res.status(400).send(`Something broke!Error: ${error}`);
-      });
-  });
+//  USERS AUTOSUGGESTS
+router.get("/autosuggest", async (req, res, next) => {
+  const { login, max } = req.body;
+  try {
+    const selectedUsers = await autosuggestUser(login, max);
+    if (selectedUsers.length === 0) {
+      return next({ message: `Autosuggest User Error: not found` });
+    }
+    res.send(selectedUsers);
+  } catch (error) {
+    next({ message: `Autosuggest User Error: ${error}` });
+  }
+});
 
-  server.get("/user/:id", (req, res) => {
-    const { id } = req.params;
-    recieveUser(id)
-      .then((user) => {
-        if (user) {
-          console.log('user :', user)
-          res.send(user);
-        } else {
-          res.status(400).send(`Something broke! No user with id: ${id}`);
-        }
-      })
-      .catch((error) => {
-        res
-          .status(400)
-          .send(`Something broke! No user with id: ${id}`)
-          .append(error);
-      });
-  });
+//  GET USER BY ID
+router.get("/:id", async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await getUser(id);
+    if (!user) {
+      return next({ message: `Get User Error: not found` });
+    }
+    res.send(user);
+  } catch (error) {
+    next({ message: `Get User Error: ${error}` });
+  }
+});
 
-  server.delete("/:id", (req, res) => {
-    const { id } = req.params;
-    deleteUser(Number(id))
-      .then((result) => {
-        console.log("Delete status", result);
-        if (Number.isNaN(result)) {
-          res.status(400).send(`Not deleted!: ${id}`);
-        } else {
-          console.log("Deleted :", id);
-          res.send(`User ${id} deleted`);
-        }
-      })
-      .catch((error) => {
-        res.status(400).send(`Something broke!Error: ${error}`);
-      });
-  });
+// DELETE USER BY ID
+router.delete("/:id", async (req, res, next) => {
+  const { id } = req.params;
 
-  server.put("/user/:id", (req, res) => {
-    const data: UserInterface = req.body;
-    const { id } = req.params;
-     updateUser(data, id)
-      .then((updatedId) => {
-        if (updatedId === null) {
-          res.status(400).send("Not updated!");
-        } else {
-          console.log('updated :', updatedId)
-          res.send(`updated1: ${ id}`);
-        }
-      })
-      .catch((error) => {
-        res.status(400).send(`Something broke!Error: ${error}`);
-      }); 
-  });
+  try {
+    const deleted: [affectedCount: number] = await deleteUser(Number(id));
+    if (deleted[0] === 0) {
+      return next({ message: `Delete user error: ${id} not deleted` });
+    }
+    res.send(`User ${id} deleted`);
+  } catch (error) {
+    next({ message: `Delete user error: ${error}` });
+  }
+});
 
-  server.post("/", (req, res) => {
-    const data: UserInterface = req.body;
-    createUser(data)
-      .then((user) => {
-        if (user === null) {
-          console.log('user not created :')
-          res.status(400).send("Not created!");
-        } else {
-          console.log('created :', user);
-          res.send(user);
-        }
-      })
-      .catch((error) => {
-        res.status(400).send(`Something broke!Error: ${error}`);
-      });
-  });
-};
+//  UPDATE USER
+router.put("/:id", async (req, res, next) => {
+  const data: UserInterface = req.body;
+  const { id } = req.params;
+
+  try {
+    const updatedId = await updateUser(data, id);
+    if (updatedId === null) {
+      return next({ message: `Update Error: user ${id} not found` });
+    }
+    res.send(`updated: ${id}`);
+  } catch (error) {
+    next({ message: `Update Error: ${error}` });
+  }
+});
+
+//  CREATE NEW USER
+router.post("/", async (req, res, next) => {
+  const data: UserInterface = req.body;
+  try {
+    const user = await createUser(data);
+    if (user === null) {
+      return next({ message: "User was not created" });
+    }
+
+    res.send(user);
+  } catch (error) {
+    next({ message: "User was not created" });
+  }
+});
+
+export default router;

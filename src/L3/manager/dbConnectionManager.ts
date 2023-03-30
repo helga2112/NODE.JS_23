@@ -1,5 +1,6 @@
 import { DB_URI } from "../service/serverService/constants";
 import { Sequelize } from "sequelize";
+import logger from "../utils/logger";
 
 export class DBConnectionManager {
   private static instance: DBConnectionManager;
@@ -16,27 +17,21 @@ export class DBConnectionManager {
   }
 
   public connect = async () => {
-    console.log("connect");
+    logger.log("info", "[DB]: connect");
     try {
       await this._sequelize.authenticate();
-      console.log("Connected ...");
+      logger.log("info", "[DB]: connected ..");
       return this._sequelize;
     } catch (e) {
-      console.log("Connection Error", e);
+      logger.log("error", `[DB]: connection error ${e}`);;
     }
   };
-
-/*   public createUsersTable = async (model: typeof Model) => {
-    await User.sync({ force: true });
-    console.log("The table for the User model dwas just (re)created!");
-  };
-
-  public createGroupTable = async (model: typeof Model) => {
-    await Group.sync({ force: true });
-    console.log("The table for the User model dwas just (re)created!");
-  }; */
 
   public get sequelize() {
     return this._sequelize;
   }
+
+  public disconnect = async () => {
+    await this.sequelize.close();
+  };
 }
