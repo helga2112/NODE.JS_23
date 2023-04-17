@@ -20,7 +20,7 @@ export const createSqlServer = async () => {
   initGroups(sequelize);
   Group.sync({ force: false });
 
-  await addDefaultValues();
+  //await addDefaultValues();
 
   handleGroupUserRouts(server);
 
