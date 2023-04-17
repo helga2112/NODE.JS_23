@@ -1,13 +1,17 @@
 import express from "express";
 import { DBConnectionManager } from "../../manager/dbConnectionManager";
 import { errorHandler } from "../../middlewhare/errorHandler";
-import { GROUP_ROUTE, USER_ROUTE } from "../../routers";
+import { AUTH_ROUTE, GROUP_ROUTE, USER_ROUTE } from "../../routers";
 import logger from "../../utils/logger";
+import { tockenCheck } from "../../middlewhare/tokenCheck";
 
 export const createServer = () => {
   const server = express();
   server.use(express.json());
   server.use(express.urlencoded({ extended: false }));
+  
+  server.use("/login", AUTH_ROUTE);
+  server.use(tockenCheck);
 
   server.use("/users", USER_ROUTE);
   server.use("/group", GROUP_ROUTE);
