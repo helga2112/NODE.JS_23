@@ -3,12 +3,13 @@ import {
   createUser,
   deleteUser,
   updateUser,
-} from "./../service/requestsService";
+} from "../service/modelServices/userService";
 import { Express } from "express-serve-static-core";
-import { getAllUsers, getUser } from "../service/requestsService";
+import { getAllUsers, recieveUser } from "../service/modelServices/userService";
 import { UserInterface } from "../models/UserModel";
 
-export const handleRouts = (server: Express) => {
+export const handleUsersRouts = (server: Express) => {
+
   server.get("/", (req, res) => {
     getAllUsers()
       .then((users) => {
@@ -38,9 +39,9 @@ export const handleRouts = (server: Express) => {
       });
   });
 
-  server.get("/:id", (req, res) => {
+  server.get("/user/:id", (req, res) => {
     const { id } = req.params;
-    getUser(id)
+    recieveUser(id)
       .then((user) => {
         if (user) {
           console.log('user :', user)
@@ -74,7 +75,7 @@ export const handleRouts = (server: Express) => {
       });
   });
 
-  server.put("/:id", (req, res) => {
+  server.put("/user/:id", (req, res) => {
     const data: UserInterface = req.body;
     const { id } = req.params;
      updateUser(data, id)
@@ -83,7 +84,7 @@ export const handleRouts = (server: Express) => {
           res.status(400).send("Not updated!");
         } else {
           console.log('updated :', updatedId)
-          res.send(`updated: ${ updatedId}`);
+          res.send(`updated1: ${ id}`);
         }
       })
       .catch((error) => {
