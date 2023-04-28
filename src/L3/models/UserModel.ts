@@ -17,7 +17,6 @@ export const initUser = (connection: Sequelize) => {
     {
       id:{
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true
       },
       login: {
@@ -26,6 +25,7 @@ export const initUser = (connection: Sequelize) => {
           is: ["[a-z]", "i"],
           min: 3,
           max: 30,
+          allowNull: false,
         },
       },
       password: {
@@ -34,12 +34,13 @@ export const initUser = (connection: Sequelize) => {
           is: ["^[a-zA-Z0-9]", "i"],
           min: 8,
           max: 30,
+          allowNull: false,
         },
       },
       email:{
         type: DataTypes.STRING,
         validate: {
-          isEmail: true
+          is: ['^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'],
         }
       },
       age: {
