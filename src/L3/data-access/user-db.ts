@@ -5,7 +5,7 @@ export const getUserDb = async (id: string) => {
   return await User.findOne({ where: { id: id } });
 };
 
-export const autosuggestUserDb = async (login: string, max: number) => {
+export const autosuggestUserDb = async (login: string, max?: number) => {
   return await User.findAll({
     where: { login: { [Op.like]: "%" + login + "%" } },
   });
@@ -19,7 +19,7 @@ export const updateUserDb = async (user: UserInterface, id: string) => {
       age: user.age,
       password: user.password,
     },
-    { where: { id: 1 } }
+    { where: { id } }
   );
 };
 
@@ -61,6 +61,7 @@ export const createInitialUsersDb = async () => {
       age: 26,
       isDeleted: false,
     });
+    return [user1, user2]
     console.log(`Users added: ${user1} ${user2}`);
   } catch (error) {
     console.log(`[Error] add initial users: ${error}`);

@@ -1,4 +1,4 @@
-import { UserInterface } from "../models/UserModel";
+/* import { UserInterface } from "../models/UserModel";
 import {
   autosuggestUserDb,
   createInitialUsersDb,
@@ -36,3 +36,4 @@ export const getAllUsers = async () => {
 export const createInitialValues = async () => {
   return createInitialUsersDb();
 };
+ */
