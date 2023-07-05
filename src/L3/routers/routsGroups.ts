@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const groups = await getAllGroups();
+    const groups = await getAllGroups();  // limit like in pagination 
     logger.log("info", `[Groups]: groups recieved`);
     res.send(groups);
   } catch (error) {

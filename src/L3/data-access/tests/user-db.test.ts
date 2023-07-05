@@ -10,14 +10,19 @@ import {
   updateUserDb,
 } from "../user-db";
 
-jest.mock("../../models/UserModel");
+/* jest.mock("../../models/UserModel"); */
 
 describe("user-db", () => {
   describe("getUserDb", () => {
+
+    it("should not return user from DB", async () => {
+      const test = await getUserDb("1000")
+      expect(test).toEqual('no user found')
+    });
     it("should return user from DB", async () => {
       const mockUser = { id: 1, login: "testuser", password: "testpassword" };
 
-      const findOneMock = jest.fn().mockResolvedValue(mockUser);
+      const findOneMock = jest.fn().mockImplementationOnce(() => mockUser);
       User.findOne = findOneMock;
 
       const user = await getUserDb("1");

@@ -1,11 +1,18 @@
+import  jwt from "jsonwebtoken";
 import { User } from "../../models/UserModel";
-import { userLogIn } from "./authorizeServise";
-import jwt, { sign } from "jsonwebtoken";
+jest.mock('jsonwebtoken', () => ({
+  ...jest.requireActual('jsonwebtoken'), // import and retain the original functionalities
+  sign: jest.fn().mockReturnValue({ foo: 'bar' }), // overwrite verify
+}));
 
+import { userLogIn } from "./authorizeServise";
+
+jest.mock("../../data-access/login");
 jest.mock("../../models/UserModel");
-jest.mock("jsonwebtoken", () =>{
-  sign: jest.fn().mockReturnValue('1234567')
-});
+/* jest.mock("jsonwebtoken", () =>{
+  sign: jest.fn(() =>'1234567') 
+}); */
+
 
 describe("authoriseService", () => {
   describe("userLogIn", () => {
@@ -17,9 +24,9 @@ describe("authoriseService", () => {
 
       const tokenMockString = "1234567";
       //const signMock = jest.spyOn(jwt, "sign");
-     /*  const signMock = jest.spyOn(jwt, "sign").mockReturnValue('123123123'); */
+      // jest.spyOn(jwt, "sign").mockImplementationOnce(() => "123123123");
 
-    /*   const token = jwt.sign(
+      /*   const token = jwt.sign(
         { login: "testuser", password: "testpassword" },
         "secret",
         {
@@ -27,14 +34,21 @@ describe("authoriseService", () => {
         }
       );
  */
+  /*     console.log('>> jwt', jwt) */
+
+     /*   jest.spyOn(jwt, 'sign'); */
+      /* sign.mockImplementation(() => () => ('TOKEN')); */
+
+    /*   console.log('>> sign', sign) */
+
       const secret = process.env.JWT_SECRET || "secret_word";
 
       const token = await userLogIn("testuser", "testpassword");
 
       expect(authorizeMock).toBeCalledTimes(1);
       expect(token).toBe(tokenMockString);
-     /*  expect(user).toEqual(mockUser); */
-      /* expect(signMock).toHaveBeenCalledWith(mockUser, secret, {
+      /*  expect(user).toEqual(mockUser); */
+     /*  expect(sign).toHaveBeenCalledWith(mockUser, secret, {
         expiresIn: "2h",
       }); */
     });

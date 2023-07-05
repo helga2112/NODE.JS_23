@@ -2,7 +2,15 @@ import { Op } from "sequelize";
 import { User, UserInterface } from "../models/UserModel";
 
 export const getUserDb = async (id: string) => {
-  return await User.findOne({ where: { id: id } });
+ 
+  
+  try{
+
+    return await User.findOne({ where: { id: id } });
+  }catch(err){
+    console.log('>>>> ERROR')
+    return 'no user found'
+  }
 };
 
 export const autosuggestUserDb = async (login: string, max?: number) => {
@@ -14,7 +22,7 @@ export const autosuggestUserDb = async (login: string, max?: number) => {
 export const updateUserDb = async (user: UserInterface, id: string) => {
   return await User.update(
     {
-      login: user.login,
+      login: user.login,  // check task, may be should not change
       email: user.email,
       age: user.age,
       password: user.password,
@@ -24,7 +32,7 @@ export const updateUserDb = async (user: UserInterface, id: string) => {
 };
 
 export const createUserDb = async (data: UserInterface) => {
-  const { login, email, password, age, id } = data;
+  const { login, email, password, age } = data;
   return await User.findOrCreate({
     where: { email: email },
     defaults: {

@@ -1,8 +1,9 @@
 import { Op } from "sequelize";
 import { User } from "../../models/UserModel";
+import { getUser, autosuggestUser, updateUser, createUser, deleteUser, getAllUsers, createInitialValues } from "./userService";
 
 
-jest.mock("../models/UserModel");
+jest.mock("../../models/UserModel");
 
 describe("userService", () => {
   describe("getUser", () => {
@@ -173,32 +174,4 @@ describe("userService", () => {
     });
   });
 });
-
-function getUser(arg0: string) {
-  throw new Error("Function not implemented.");
-}
-
-function autosuggestUser(arg0: string, arg1: number) {
-  throw new Error("Function not implemented.");
-}
-
-function updateUser(mockUser: { login: string; email: string; age: number; password: string; isDeleted: boolean; }, arg1: string) {
-  throw new Error("Function not implemented.");
-}
-
-function createUser(mockUser: { login: string; email: string; password: string; age: number; isDeleted: boolean; }) {
-  throw new Error("Function not implemented.");
-}
-
-function deleteUser(arg0: number) {
-  throw new Error("Function not implemented.");
-}
-
-function getAllUsers() {
-  throw new Error("Function not implemented.");
-}
-
-function createInitialValues() {
-  throw new Error("Function not implemented.");
-}
 

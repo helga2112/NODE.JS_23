@@ -10,7 +10,12 @@ import {
 import { UserInterface } from "../../models/UserModel";
 
 export const getUser = (id: string) => {
-  return getUserDb(id);
+  console.log('>>>> getUser CALLED')
+  try{
+    return getUserDb(id);
+  }catch(err){
+    throw new Error( 'no user found')
+  }
 };
 
 export const autosuggestUser = async (login: string, max: number) => {

@@ -13,9 +13,12 @@ export const userLogIn = async (login: string, password: string) => {
 
     const secret = process.env.JWT_SECRET || 'secret_word';
     console.log(">>>> SECRET", secret);
+    console.log(">>>> jwt", jwt);
     const token = jwt.sign({ login, password }, secret, {
       expiresIn: "2h",
     });
+
+    console.log('>> token', token)
     return token
   } catch (error) {
     throw Error(`[AUTH]: login error: ${error}`);
