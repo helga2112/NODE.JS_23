@@ -1,6 +1,6 @@
-import winston, { format } from "winston";
+import winston, { Logger, format } from "winston";
 
-const logger = winston.createLogger({
+const logger: Logger = winston.createLogger({
   level: "debug",
   format: format.combine(format.splat(), format.simple(),  winston.format.colorize({ all: true }),),
   transports: [new winston.transports.Console()],

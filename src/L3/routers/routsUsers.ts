@@ -67,11 +67,11 @@ router.delete("/:id", async (req, res, next) => {
 
 //  UPDATE USER
 router.put("/:id", async (req, res, next) => {
-  const data: UserInterface = req.body;
+  const data: UserInterface = req.body; // add validation for (more often) as middlware
   const { id } = req.params;
 
   try {
-    const updatedId = await updateUser(data, id);
+    const updatedId = await updateUser(data, id); // add validation for data ( seldom)
     if (updatedId === null) {
       return next({ message: `Update Error: user ${id} not found` });
     }
